@@ -1,0 +1,20 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -41,7 +41,7 @@
+ TGT_INC = $(top_srcdir)/$(TGT_DIR)/include
+ 
+ sbin_PROGRAMS = ublk ublk.null ublk.loop ublk.nbd ublk.sheepdog ublk_user_id
+-noinst_PROGRAMS = demo_null demo_event
++noinst_PROGRAMS =
+ dist_sbin_SCRIPTS = utils/ublk_chown.sh utils/ublk_chown_docker.sh
+ 
+ if HAVE_LIBNFS
+@@ -114,6 +114,8 @@
+ ublk_user_id_CFLAGS = $(WARNINGS_CFLAGS) $(LIBURING_CFLAGS) $(PTHREAD_CFLAGS)
+ ublk_user_id_CPPFLAGS = $(ublk_user_id_CFLAGS) -I$(top_srcdir)/include
+ ublk_user_id_LDADD = lib/libublksrv.la $(LIBURING_LIBS) $(PTHREAD_LIBS)
++# 它链接的是 C++ 写的 libublksrv，用 CC 链接会缺 libc++ 符号
++ublk_user_id_LINK = $(CXXLINK)
+ 
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = ublksrv.pc

@@ -1,0 +1,11 @@
+--- a/configure
++++ b/configure
+@@ -511,7 +511,7 @@
+   has_bpftool="yes"
+ fi
+ 
+-tmp_bpf=$(mktemp /tmp/test_bpf_XXXXXX)
++tmp_bpf=$(mktemp "${TMPDIR:-/tmp}/test_bpf_XXXXXX")
+ tmp_bpf_c="$tmp_bpf".c
+ tmp_bpf_o="$tmp_bpf".o
+ 

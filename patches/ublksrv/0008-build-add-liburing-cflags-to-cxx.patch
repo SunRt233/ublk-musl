@@ -1,0 +1,15 @@
+--- a/lib/Makefile.am
++++ b/lib/Makefile.am
+@@ -13,6 +13,12 @@
+ 	$(WARNING_CFLAGS) \
+ 	$(LIBURING_CFLAGS) \
+ 	$(PTHREAD_CFLAGS) -DUBLKSRV_INTERNAL_H_
++# C++ 源码（ublksrv_json.cpp）不会从 libublksrv_la_CFLAGS 取到
++# LIBURING_CFLAGS，外置 liburing 时 <liburing.h> 就找不到
++libublksrv_la_CXXFLAGS = \
++	$(WARNING_CFLAGS) \
++	$(LIBURING_CFLAGS) \
++	$(PTHREAD_CFLAGS) -DUBLKSRV_INTERNAL_H_
+ libublksrv_la_CPPFLAGS = \
+ 	-I$(top_srcdir)/include -DUBLKSRV_INTERNAL_H_
+ libublksrv_la_LIBADD = \

@@ -1,0 +1,11 @@
+--- a/targets/nbd/ublk.nbd.cpp
++++ b/targets/nbd/ublk.nbd.cpp
+@@ -349,7 +349,7 @@
+ 		 * the 28-byte header only.
+ 		 */
+ 		.msg_iovlen = (op == UBLK_IO_OP_WRITE &&
+-				!ublksrv_tgt_queue_auto_zc(q)) ? 2UL : 1UL,
++				!ublksrv_tgt_queue_auto_zc(q)) ? 2 : 1,
+ 	};
+ 
+ 	if (type == -1)

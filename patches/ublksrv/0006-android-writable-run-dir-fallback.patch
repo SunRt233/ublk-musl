@@ -1,0 +1,30 @@
+--- a/lib/ublksrv_json.cpp
++++ b/lib/ublksrv_json.cpp
+@@ -720,6 +720,7 @@
+ const char *ublksrv_get_pid_dir(void)
+ {
+ 	const char *dir = secure_getenv("UBLKSRV_RUN_DIR");
++	static char fallback[PATH_MAX];
+ 
+ 	/*
+ 	 * A relative path would change with the cwd of each command, and
+@@ -727,5 +728,19 @@
+ 	 */
+ 	if (dir && dir[0] == '/' && strlen(dir) < PATH_MAX - 16)
+ 		return dir;
++
++	/*
++	 * Android: / is read-only, so the default /run/ublksrvd can't be
++	 * created. Fall back to a writable directory instead of failing
++	 * every command with ENOENT.
++	 */
++	if (access("/run", W_OK) != 0) {
++		dir = secure_getenv("TMPDIR");
++		if (!dir || dir[0] != '/')
++			dir = "/data/local/tmp";
++		snprintf(fallback, sizeof(fallback), "%s/ublksrvd", dir);
++		if (strlen(fallback) < PATH_MAX - 16)
++			return fallback;
++	}
+ 	return UBLKSRV_PID_DIR;
+ }

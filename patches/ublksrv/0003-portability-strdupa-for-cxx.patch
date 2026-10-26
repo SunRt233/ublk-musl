@@ -1,0 +1,23 @@
+--- a/targets/ublksrv_tgt.cpp
++++ b/targets/ublksrv_tgt.cpp
+@@ -9,6 +9,20 @@
+ #include <sys/eventfd.h>
+ #include "ublksrv_tgt.h"
+ 
++/*
++ * musl/glibc 的 strdupa() 实现是 strcpy(alloca(...), s)，在 C++ 里
++ * void* -> char* 隐式转换不合法；这里用 C++ 合法的等价实现。
++ */
++#undef strdupa
++#include <alloca.h>
++#include <string.h>
++#define strdupa(s) __extension__ ({			\
++	size_t __l = strlen(s) + 1;			\
++	char *__b = (char *)alloca(__l);		\
++	memcpy(__b, (s), __l);				\
++	__b;						\
++})
++
+ #define ERROR_EVTFD_DEVID   0xfffffffffffffffe
+ 
+ /* ---------- Shared memory zero-copy (UBLK_F_SHMEM_ZC) ---------- */

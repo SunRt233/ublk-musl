@@ -1,0 +1,25 @@
+--- a/lib/utils.c
++++ b/lib/utils.c
+@@ -64,6 +64,11 @@
+ 	va_start(ap, fmt);
+ 	vsyslog(LOG_ERR, fmt, ap);
+ 	va_end(ap);
++
++	/* Android 上没有 syslogd，镜像一份到 stderr */
++	va_start(ap, fmt);
++	vfprintf(stderr, fmt, ap);
++	va_end(ap);
+ }
+ 
+ void ublk_log(const char *fmt, ...)
+@@ -73,6 +78,10 @@
+ 	va_start(ap, fmt);
+ 	vsyslog(LOG_INFO, fmt, ap);
+ 	va_end(ap);
++
++	va_start(ap, fmt);
++	vfprintf(stderr, fmt, ap);
++	va_end(ap);
+ }
+ 
+ #ifdef DEBUG
