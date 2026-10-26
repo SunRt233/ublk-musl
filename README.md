@@ -79,6 +79,23 @@ umount /mnt/x; ublk del -n 0
   也能正常工作——这是 loop 会 `EIO` 的那类场景。
 * `pid_max` 无关；ublk 不碰 pid。
 
+## 前置条件
+
+* 内核需启用 `CONFIG_BLK_DEV_UBLK`（GKI 6.6 默认 `=y`，`/sys/module/ublk_drv`
+  存在即可），以及 `CONFIG_IO_URING=y`。
+* 需要对 `/dev/ublk-control`（`crw------- root root`，10:126）的读写权限，
+  即 root。如果设备节点不存在，自己建：
+
+```sh
+mknod /dev/ublk-control c 10 126
+chmod 600 /dev/ublk-control
+chown root:root /dev/ublk-control
+chcon u:object_r:ublk_control_device:s0 /dev/ublk-control   # 有 SELinux 时
+```
+
+（实测在 Android 16 上，手工 `rm /dev/ublk-control` 后不重建，客户会报
+`control dev /dev/ublk-control can't be opened`，而且不会自动 recovery。）
+
 ## 验证
 
 `build.sh` 结束时自检：每个产物都必须没有 `INTERP`（即静态）。

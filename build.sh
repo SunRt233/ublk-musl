@@ -157,6 +157,12 @@ for t in $TARGETS; do
 done
 chmod 755 "$BINDIR"/*
 
+# ---------------------------------------------------------------- 产物清单
+( cd "$BINDIR" && sha256sum $TARGETS > SHA256SUMS )
+echo
+echo "校验和:"
+sed 's/^/  /' "$BINDIR/SHA256SUMS"
+
 # ---------------------------------------------------------------- 可选安装
 if [ -n "$PREFIX" ]; then
 	say "安装到 $PREFIX"
